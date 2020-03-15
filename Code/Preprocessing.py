@@ -93,16 +93,16 @@ class ReadData:
 
 
 
-file1 = "Traffic_Crashes_-_Crashes.csv"
-file2 = "Traffic_Crashes_-_People.csv"
-file3 = "Traffic_Crashes_-_Vehicles.csv"
-
-crash = ReadData(file1, file2, file3, "drop_cols.csv")
-
-df_crashes = crash.read_dataset()
-crash.download_preprocessing(df_crashes)
-print("Download is done!")
-# df_crashes = crash.read_joing()
-profile = crash.describe_data(df_crashes)
-profile.to_file('C:/Users/Cristina/Documents/GWU/Capstone/EDA_accidents_pycharm2.html')
+# file1 = "Traffic_Crashes_-_Crashes.csv"
+# file2 = "Traffic_Crashes_-_People.csv"
+# file3 = "Traffic_Crashes_-_Vehicles.csv"
 #
+# crash = ReadData(file1, file2, file3, "drop_cols.csv")
+#
+# df_crashes = crash.read_dataset()
+# crash.download_preprocessing(df_crashes)
+# print("Download is done!")
+# # df_crashes = crash.read_joing()
+# profile = crash.describe_data(df_crashes)
+# profile.to_file('C:/Users/Cristina/Documents/GWU/Capstone/EDA_accidents_pycharm2.html')
+# #
