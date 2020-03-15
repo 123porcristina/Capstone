@@ -29,6 +29,24 @@ def main():
     num_features, cat_features = crash.identify_features(df=df_crashes)
     col_transform, df = crash.encode_imputation(num_features=num_features,cat_features=cat_features,df=df_crashes)
 
+    "*****************Training**************"
+    ma = model.ModelAccidents(df=df_crashes)
+    X, y, X_train, X_test, y_train, y_test, categorical_features_indices = ma.split_data()
+    clfs, param_grids = ma.dict_classifiers()
+    pipe_clfs = ma.dict_pipeline(clfs=clfs)
+
+    param_grids = ma.params_lr(param_grids=param_grids)
+    param_grids = ma.params_mlp(param_grids=param_grids)
+    param_grids = ma.params_rf(param_grids=param_grids)
+    param_grids = ma.params_xgboost(param_grids=param_grids)
+    param_grids = ma.params_svc(param_grids=param_grids)
+    param_grids = ma.params_knn(param_grids=param_grids)
+    # param_grids = ma.params_catboost(param_grids=param_grids)
+
+    best_score_param_estimators = ma.hyperparameter_tunning(pipe_clfs, param_grids, X_train, y_train)
+
+    ma.model_selection(best_score_param_estimators)
+
 
 
 if __name__ == '__main__':
