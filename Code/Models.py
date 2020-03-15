@@ -46,6 +46,9 @@ class ModelAccidents():
         cm.to_csv("catboost_prediction.csv")
         return model
 
+    def feature_importance(self, model):
+        return print(model.get_feature_importance(prettified=True))
+
     def dict_classifiers(self):
         clfs = {'lr': LogisticRegression(random_state=0),
                 'mlp': MLPClassifier(random_state=0),
@@ -161,6 +164,5 @@ class ModelAccidents():
 
 
 
-    def feature_importance(self):
-        return False
+
 

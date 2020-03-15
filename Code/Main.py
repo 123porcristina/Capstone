@@ -32,6 +32,14 @@ def main():
     "*****************Training**************"
     ma = model.ModelAccidents(df=df_crashes)
     X, y, X_train, X_test, y_train, y_test, categorical_features_indices = ma.split_data()
+
+    """Cataboost"""
+    model_cat = ma.model_catboost(X=X, y=y, X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test,
+                                  categorical_features_indices=categorical_features_indices)
+    "Feature Importance: According to Catboost"
+    ma.feature_importance(model_cat)
+
+    "Several models"
     clfs, param_grids = ma.dict_classifiers()
     pipe_clfs = ma.dict_pipeline(clfs=clfs)
 
