@@ -10,16 +10,6 @@ class ModelAccidents():
     def __init__(self):
         self.crashes = cp.df_crashes #get df from the file preprocessing.py
 
-    def encode_cols(self, df):
-        return pd.get_dummies(df, columns=['TRAFFIC_CONTROL_DEVICE','DEVICE_CONDITION', 'WEATHER_CONDITION',
-                                           'LIGHTING_CONDITION', 'FIRST_CRASH_TYPE', 'TRAFFICWAY_TYPE',
-                                           'ALIGNMENT', 'ROADWAY_SURFACE_COND', 'ROAD_DEFECT', 'CRASH_TYPE', 'DAMAGE',
-                                           'PRIM_CONTRIBUTORY_CAUSE', 'SEC_CONTRIBUTORY_CAUSE', 'STREET_DIRECTION',
-                                           'STREET_NAME', 'MOST_SEVERE_INJURY', 'PERSON_TYPE', 'STATE', 'SEX',
-                                           'AIRBAG_DEPLOYED', 'EJECTION', 'INJURY_CLASSIFICATION',	'DRIVER_ACTION',
-                                           'DRIVER_VISION', 'PHYSICAL_CONDITION', 'UNIT_TYPE',	'MAKE',	'VEHICLE_YEAR',
-                                           'VEHICLE_DEFECT', 'VEHICLE_TYPE', 'OCCUPANT_CNT'])
-
     def split_data(self, df):
         X = df.drop(['DAMAGE'], axis=1)
         y = df.DAMAGE
