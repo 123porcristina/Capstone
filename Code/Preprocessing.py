@@ -19,7 +19,12 @@ class ReadData:
 
     def read_complete_data(self):
         """Read complete csv after join - this file was previouly downloaded"""
-        return pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + 'Merged_New_Variables_Only.csv', dtype='unicode')
+        """for a faster reading, read the final file with the joins"""
+        df = pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + 'Merged_New_Variables_Only.csv', dtype='unicode')
+
+        df = df.drop(['CRASH_RECORD_ID', 'RD_NO', 'CRASH_DATE', 'LATITUDE', 'LONGITUDE'],
+                     axis=1)  # 'CRASH_DATE_x', 'DATE_POLICE_NOTIFIED', 'HIT_AND_RUN_I', 'RD_NO_y',
+        return df
 
     def get_value_user(self, df):
         # ask to the user to enter which target wants to evaluate
@@ -70,9 +75,10 @@ class ReadData:
         df['Weather_New'].fillna((df.groupby(['Road_Surface_New'])['Weather_New'].transform(lambda x: x.mode()[0])),
                                  inplace=True)
         # numerical
-        df["Posted_Speed_New"].fillna((df["Posted_Speed_New"].mean()), inplace=True)
-        df["BAC2"].fillna((df["BAC2"].mean()), inplace=True)
-        df["AGE2"].fillna((df.groupby('SEX2')["AGE2"].transform("median")), inplace=True)
+        df["Posted_Speed_New"].fillna((df["Posted_Speed_New"].median()), inplace=True)
+        df["BAC2"].fillna((df["BAC2"].median()), inplace=True)
+        # df["AGE2"].fillna((df.groupby('SEX2')["AGE2"].transform("median")), inplace=True)
+        df['AGE2'] = df.groupby(["SEX2"])['AGE2'].transform(lambda x: x.fillna(x.median()))
         return df
 
     def factorize_categ(self, df, target):

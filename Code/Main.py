@@ -15,16 +15,16 @@ def main():
 
     """Generates EDA"""
     # it is commented because it takes a long time to run- uncomment if needed
-    profile = accidents.describe_data(df)
-    profile.to_file(path_download)
+    # profile = accidents.describe_data(df)
+    # profile.to_file(path_download)
 
     """User action required: Enter target to evaluate"""
     df, target = accidents.get_value_user(df)
 
     """Encoding Features"""
     # ENCODE VARIABLES (FACTORIZE: ORDINAL (TARGET))
-    target = 'CRASH_TYPE'
     df_encoded, le = accidents.factorize_categ(df, target=target)
+
     # ENCODE TARGET TECHNIQUE USING SMOOTH: OTHER FEATURES
     df_encoded['PRIM_CONTRIBUTORY_CAUSE'] = accidents.calc_smooth_mean(df_encoded, by='PRIM_CONTRIBUTORY_CAUSE',
                                                                        on=target, m=10)
@@ -46,16 +46,14 @@ def main():
                                                                                                         target=target)
     # Feature Importance using logistic regression and random forest
     print(model.feature_importance_lr(X, y))
+    print("CReating feature importance 2")
     print(model.feature_importance(X, y))
 
     # Oversampling
     X_train_res, y_train_res = model.oversampling(X_train, y_train)
     print('Resampled dataset shape %s' % Counter(y_train_res))
 
-    # SHALLOW CLASSIFIERS-OVERSAMPLED
-    best_score_param_estimators = model.classifiers3(X_train_res, y_train_res)
-
-    # ENCODED: SPLIT IN TRAINING AND TEST
+    # SHALLOW CLASSIFIERS-OVERSAMPLED - ENCODED
     X, y, X_train, X_validation, y_train, y_validation, categorical_features_indices = model.split_data(df_encoded,
                                                                                                         target=target)
     # Executes several classifiers
