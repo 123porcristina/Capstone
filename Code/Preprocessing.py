@@ -1,97 +1,102 @@
-
 # pip install pandas-profiling
 # pip install --force-reinstall package_with_metadata_issue
-import pandas as pd
-import numpy as np
-from pathlib import Path
-from pandas_profiling import ProfileReport
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
 
+# General
+import pandas as pd
+from pathlib import Path
+
+# EDA
+from pandas_profiling import ProfileReport
+
+# For encoding
+from sklearn.preprocessing import LabelEncoder
 
 
 # types of variables and descriptive statistics
 class ReadData:
-    def __init__(self, data_crashes, data_people, data_vehicle, drop_cols):
-        self.crashes = data_crashes
-        self.people = data_people
-        self.vehicle = data_vehicle
-        self.drop_col = drop_cols
-
-    def read_dataset(self):
-        """Read all datasets and join them, also read file to drop cols"""
-        self.crashes = pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + self.crashes, dtype='unicode')
-        self.people = pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + self.people, dtype='unicode')
-        self.vehicle = pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + self.vehicle, dtype='unicode')
-        self.drop_col = list(pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + self.drop_col))
-        df = self.join_data()
-        return df
+    def __init__(self, path):
+        self.path = path
 
     def read_complete_data(self):
         """Read complete csv after join - this file was previouly downloaded"""
-        return pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + 'final_accidents.csv', dtype='unicode')
+        return pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + 'Merged_New_Variables_Only.csv', dtype='unicode')
 
-    def join_data(self):
-        """Join people, crashes and vehicles dataset"""
-        df = self.crashes.merge(self.people, on='CRASH_RECORD_ID').merge(self.vehicle, on=['CRASH_RECORD_ID', 'VEHICLE_ID'])
-        df = df.drop(self.drop_col, axis=1)  # Drops columns according to excel
-        df = self.drop_non_drivers(df)
-        df = self.convert_datetime(df)
-        df = df.sort_values(by='CRASH_DATE_x', ascending=True)
-        df = self.convert_categorical(df)
-        return df
-
-    def drop_non_drivers(self, df):
-        """deletes all values different than driver"""
-        return df[df.PERSON_TYPE == 'DRIVER']
+    def get_value_user(self, df):
+        # ask to the user to enter which target wants to evaluate
+        while True:
+            try:
+                target = input("Enter TARGET to evaluate: ")
+            except ValueError:
+                print("Please, enter a value")
+                continue
+            if target == 'DAMAGE':
+                df = df.drop(['CRASH_TYPE', 'Most_Severe_Injury_New'], axis=1)
+                break
+            elif target == 'CRASH_TYPE':
+                df = df.drop(['DAMAGE', 'Most_Severe_Injury_New'], axis=1)
+                break
+            elif target == 'Most_Severe_Injury_New':
+                df = df.drop(['CRASH_TYPE', 'CRASH_TYPE'], axis=1)
+                break
+            else:
+                print("Invalid! ", target)
+                continue
+        return df, target
 
     def convert_datetime(self, df):
-        """convert date to date time"""
-        # df.DATE_POLICE_NOTIFIED = pd.to_datetime(df.DATE_POLICE_NOTIFIED)
-        df.CRASH_DATE_x = pd.to_datetime(df.CRASH_DATE_x)
+        df.CRASH_DATE = pd.to_datetime(df.CRASH_DATE)
         return df
 
     def convert_categorical(self, df):
-        """convert object to categorical to speed training"""
         cols = df.select_dtypes(exclude=['int64', 'float64', 'datetime']).columns.to_list()
         df[cols] = df[cols].astype('category')
         return df
 
-    def describe_data(self, df):
-        """Using pandas-profiling to create our: EDA - it takes long time to run"""
-        df = df.drop(['CRASH_DATE_x', 'DATE_POLICE_NOTIFIED', 'HIT_AND_RUN_I', 'RD_NO_y', 'RD_NO'], axis=1)
-        return ProfileReport(df, title='EDA Report', html={'style': {'full_width': True}})
-
-    def download_preprocessing(self, df):
-        return df.to_csv(r'C:/Users/Cristina/Documents/GWU/Capstone/Data/final_accidents2.csv', index=False)
-
     def identify_features(self, df):
-        """identify categorical and num features"""
-        num_features = df.select_dtypes(include=['int64', 'float64']).columns
-        cat_features = df.select_dtypes(include=['object', 'bool', 'category']).columns
-        return num_features, cat_features
+        """Identify categorical and numerical features"""
+        cols = df.select_dtypes(exclude=['int64', 'float64', 'datetime']).columns.to_list()
+        df[cols] = df[cols].astype('category')
 
+        numerical_index = df.select_dtypes(include=['int64', 'float64']).columns
+        categorical_index = df.select_dtypes(include=['object', 'bool', 'category']).columns
+        return numerical_index, categorical_index
 
-    def encode_imputation(self, num_features, cat_features, df):
-        "Dealing with missing values and One Hot Encode categorical vbles"
-        num_transformer = Pipeline(steps=[('imputer', SimpleImputer(missing_values=np.nan, strategy='mean')),
-                                          ('scaler', StandardScaler())])
+    def data_imputation(self, df):
+        """Fill in missing values"""
+        # categorical
+        df["Traffic_Control_New"].fillna((df["Traffic_Control_New"].mode()[0]), inplace=True)
+        df["Road_Surface_New"].fillna((df["Road_Surface_New"].mode()[0]), inplace=True)
+        df["SEX2"].fillna((df["SEX2"].mode()[0]), inplace=True)
+        df['Weather_New'].fillna((df.groupby(['Road_Surface_New'])['Weather_New'].transform(lambda x: x.mode()[0])),
+                                 inplace=True)
+        # numerical
+        df["Posted_Speed_New"].fillna((df["Posted_Speed_New"].mean()), inplace=True)
+        df["BAC2"].fillna((df["BAC2"].mean()), inplace=True)
+        df["AGE2"].fillna((df.groupby('SEX2')["AGE2"].transform("median")), inplace=True)
+        return df
 
-        cat_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='most_frequent')),
-                                          ('onehot', OneHotEncoder(handle_unknown='ignore'))])
+    def factorize_categ(self, df, target):
+        """Ordinal Encoding just for target"""
+        le = LabelEncoder()
+        df[target] = le.fit_transform(df[target])
+        # print(le.classes_)
+        return df, le
 
-        col_transform = ColumnTransformer(transformers=[('num', num_transformer, num_features),
-                                                        ('cat', cat_transformer, cat_features)])
+    def calc_smooth_mean(self, df, by, on, m):
+        """target encoding techique using smoothing. It is used to encode all the variables different from the target"""
+        # Compute the global mean
+        mean = df[on].mean()
+        # Compute the number of values and the mean of each group
+        agg = df.groupby(by)[on].agg(['count', 'mean'])
+        counts = agg['count']
+        means = agg['mean']
+        # Compute the "smoothed" means
+        smooth = (counts * means + m * mean) / (counts + m)
+        # Replace each value by the according smoothed mean
+        return df[by].map(smooth)
 
-        col_transform.fit(df)
-        df = col_transform.transform(df)
-        return col_transform, df
-
-
-
+    def describe_data(self, df):
+        return ProfileReport(df, title='Pandas Profiling Report', html={'style': {'full_width': True}})
 
 # file1 = "Traffic_Crashes_-_Crashes.csv"
 # file2 = "Traffic_Crashes_-_People.csv"
