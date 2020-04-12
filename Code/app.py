@@ -54,22 +54,25 @@ def reference():
 
 def link_github():
     return html.Div([
-        'For a look into facial recognition and web scraping, please visit the '
+        'For a look into this project, please visit the '
         'original repository ',
         html.A('here', href='https://github.com/123porcristina/Capstone'),
         '.'
     ])
+
 
 def severity():
     return html.Div(className='app-controls-block', children=[
         html.Div(className='app-controls-name', children='Actions'),
         html.Hr(),
         html.Div(className="'app-controls-block'", children=[
-            html.Label("First Crash Type *"),
+
+            html.Div(
+                className='app-controls-name-label',
+                children='1st Crash Type:'
+            ),
             dcc.Dropdown(
                 id="nrows-Crash-Type",
-                # className='fasta-entry-dropdown',
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'ANGLE', 'value': 'ANGLE'},
                     {'label': 'FIXED OBJECT', 'value': 'FIXED OBJECT'},
@@ -79,26 +82,15 @@ def severity():
                     {'label': 'OVERTURNED', 'value': 'OVERTURNED'},
                     {'label': 'TURNING', 'value': 'TURNING'},
                 ],
-                # style={'height': '30px', 'width': '10px'},
                 placeholder='Select...',
-                # value='ANGLE'
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Number units"),
-            dcc.Input(
-                id='input-box-num-units',
-                type="number",
-                value=1,
-                name="number of rows",
-                min=0,
-                step=1,
-                placeholder='Enter a value...',
+            html.Div(
+                className='app-controls-name-label',
+                children='Crash Hour:'
             ),
-
-            html.Label("Crash Hour"),
             dcc.Dropdown(
                 id="nrows-Crash-Hour",
-                # className="three columns dropdown-box-second",
                 options=[
                     {'label': '0', 'value': '0'},
                     {'label': '1', 'value': '1'},
@@ -125,14 +117,15 @@ def severity():
                     {'label': '22', 'value': '22'},
                     {'label': '23', 'value': '23'},
                 ],
-                # value='15'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Crash Day of Week"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Crash Day of Week:'
+            ),
             dcc.Dropdown(
                 id="nrows-day-week",
-                # className="three columns dropdown-box-third",
                 options=[
                     {'label': 'Sunday', 'value': '1'},
                     {'label': 'Monday', 'value': '2'},
@@ -142,14 +135,15 @@ def severity():
                     {'label': 'Friday', 'value': '6'},
                     {'label': 'Saturday', 'value': '7'},
                 ],
-                # value='1'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Crash Month"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Crash Month:'
+            ),
             dcc.Dropdown(
                 id="nrows-month",
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'January', 'value': '1'},
                     {'label': 'February', 'value': '2'},
@@ -164,14 +158,15 @@ def severity():
                     {'label': 'November', 'value': '11'},
                     {'label': 'December', 'value': '12'},
                 ],
-                # value='1'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Contributory Cause"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Contributory Cause:'
+            ),
             dcc.Dropdown(
                 id="nrows-contributory",
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'ANIMAL', 'value': 'ANIMAL'},
                     {'label': 'DISREGARDING OTHER TRAFFIC SIGNS',
@@ -192,37 +187,42 @@ def severity():
                         'value': 'UNDER THE INFLUENCE OF ALCOHOL/DRUGS (USE WHEN ARREST IS EFFECTED)'},
                     {'label': 'UNABLE TO DETERMINE', 'value': 'UNABLE TO DETERMINE'},
                 ],
-                # value='WEATHER'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Posted Speed"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Posted Speed:'
+            ),
             dcc.Input(
                 id="nrows-speed",
                 type="number",
-                value=1,
+                value=30,
                 name="number of rows",
                 min=30,
                 step=1,
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Traffic Control"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Traffic Control:'
+            ),
             dcc.Dropdown(
                 id="nrows-traffic",
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'None', 'value': 'None'},
                     {'label': 'Traffic Signal', 'value': 'TrafficSignal'},
                     {'label': 'Other Control', 'value': 'OtherControl'},
                 ],
-                # value='TrafficSignal'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Weather"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Weather:'
+            ),
             dcc.Dropdown(
                 id="nrows-weather",
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'Clear', 'value': 'Clear'},
                     {'label': 'Snow', 'value': 'Snow'},
@@ -230,28 +230,31 @@ def severity():
                     {'label': 'Rain', 'value': 'Rain'},
                     {'label': 'Other', 'value': 'OtherForecast'},
                 ],
-                # value='Clear'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Road Surface"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Road Surface:'
+            ),
             dcc.Dropdown(
                 id="nrows-road",
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'Dry', 'value': 'Dry'},
                     {'label': 'Snow', 'value': 'Snow'},
                     {'label': 'Wet', 'value': 'Wet'},
                     {'label': 'Other', 'value': 'OtherCondition'},
                 ],
-                # value='Clear'
-                placeholder='Select...',
-            ),
 
-            html.Label("Sex"),
+                placeholder='Select...',
+            ), html.Br(), html.Br(),
+
+            html.Div(
+                className='app-controls-name-label',
+                children='Sex:'
+            ),
             dcc.Dropdown(
                 id="nrows-sex",
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'Male-Female', 'value': 'MaleFemale'},
                     {'label': 'Both Male', 'value': 'BothMale'},
@@ -259,11 +262,13 @@ def severity():
                     {'label': 'Female Other', 'value': 'Female Other'},
                     {'label': 'Male Other', 'value': 'MaleOther'},
                 ],
-                # value='BothMale'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("BAC"),
+            html.Div(
+                className='app-controls-name-label',
+                children='BAC:'
+            ),
             dcc.Input(
                 id="nrows-bac",
                 type="number",
@@ -271,9 +276,12 @@ def severity():
                 name="number of rows",
                 min=0,
                 step=1,
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("AGE"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Age:'
+            ),
             dcc.Input(
                 id="nrows-age",
                 type="number",
@@ -290,16 +298,19 @@ def severity():
                 ]),
             ])
 
+
 def risk():
     return html.Div(className='app-controls-block', children=[
         html.Div(className='app-controls-name', children='Actions'),
         html.Hr(),
         html.Div(className="'app-controls-block'", children=[
 
-            html.Label("Crash Hour"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Crash Hour:'
+            ),
             dcc.Dropdown(
                 id="nrows-Crash-Hour-risk",
-                # className="three columns dropdown-box-second",
                 options=[
                     {'label': '0', 'value': '0'},
                     {'label': '1', 'value': '1'},
@@ -326,14 +337,15 @@ def risk():
                     {'label': '22', 'value': '22'},
                     {'label': '23', 'value': '23'},
                 ],
-                # value='15'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Crash Day of Week"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Crash Day of Week:'
+            ),
             dcc.Dropdown(
                 id="nrows-day-week-risk",
-                # className="three columns dropdown-box-third",
                 options=[
                     {'label': 'Sunday', 'value': '1'},
                     {'label': 'Monday', 'value': '2'},
@@ -343,14 +355,15 @@ def risk():
                     {'label': 'Friday', 'value': '6'},
                     {'label': 'Saturday', 'value': '7'},
                 ],
-                # value='1'
                 placeholder='Select...',
-            ),
+            ), html.Br(), html.Br(),
 
-            html.Label("Weather"),
+            html.Div(
+                className='app-controls-name-label',
+                children='Weather:'
+            ),
             dcc.Dropdown(
                 id="nrows-weather-risk",
-                # className="three columns dropdown-box-first",
                 options=[
                     {'label': 'Clear', 'value': 'Clear'},
                     {'label': 'Snow', 'value': 'Snow'},
@@ -358,7 +371,6 @@ def risk():
                     {'label': 'Rain', 'value': 'Rain'},
                     {'label': 'Other', 'value': 'OtherForecast'},
                 ],
-                # value='Clear'
                 placeholder='Select...',
             ),
 
@@ -409,8 +421,6 @@ app.layout = html.Div(
                             ]),
                             html.Hr(),
                             html.Div(className="'app-controls-block'", children=[
-                                # html.Label("Directory name *"),
-                                # dcc.Input(id='input-box', placeholder='Instagram user...', type='text'),
                                 html.Br(),
                                 html.Br(),
                                 html.Button('Show Exploratory Data Analysis', id='btn-1', className="control-download",
@@ -418,17 +428,6 @@ app.layout = html.Div(
                                 html.Br(),
                                 html.Button('Reset Screen', id='btn-2', n_clicks_timestamp=0),
                                 html.Br(),
-                                # html.Button('Facial Recognition', id='btn-3',
-                                #             n_clicks_timestamp=0),
-                                # html.Br(),
-                                # html.Button('Stop video', id='btn-4',  n_clicks_timestamp=0),
-                                # html.Br(),
-                                # html.Button('Haar', id='btn-5',  n_clicks_timestamp=0),
-                                # html.Br(),
-                                # html.Button('Gradient', id='btn-6',  n_clicks_timestamp=0),
-                                #
-                                # # html.Div(id='container-button-timestamp')
-
                             ]),
                         ]),
                         html.Hr(),

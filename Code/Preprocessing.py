@@ -22,7 +22,7 @@ class ReadData:
         """for a faster reading, read the final file with the joins"""
         df = pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + 'Merged_New_Variables_Only.csv')#, dtype='unicode')
 
-        df = df.drop(['CRASH_RECORD_ID', 'RD_NO', 'CRASH_DATE', 'LATITUDE', 'LONGITUDE', 'PRIM_CONTRIBUTORY_CAUSE'],
+        df = df.drop(['CRASH_RECORD_ID', 'RD_NO', 'CRASH_DATE', 'LATITUDE', 'LONGITUDE', 'PRIM_CONTRIBUTORY_CAUSE', 'NUM_UNITS'],
                      axis=1)  # 'CRASH_DATE_x', 'DATE_POLICE_NOTIFIED', 'HIT_AND_RUN_I', 'RD_NO_y',
         return df
 
@@ -102,7 +102,7 @@ class ReadData:
         return df[by].map(smooth)
 
     def describe_data(self, df):
-        return ProfileReport(df, title='Pandas Profiling Report', html={'style': {'full_width': True}})
+        return ProfileReport(df, title='Traffic Accidents Profiling Report', html={'style': {'full_width': True}})
 
 # file1 = "Traffic_Crashes_-_Crashes.csv"
 # file2 = "Traffic_Crashes_-_People.csv"
