@@ -20,9 +20,9 @@ class ReadData:
     def read_complete_data(self):
         """Read complete csv after join - this file was previouly downloaded"""
         """for a faster reading, read the final file with the joins"""
-        df = pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + 'Merged_New_Variables_Only.csv', dtype='unicode')
+        df = pd.read_csv(str(Path(__file__).parents[1]) + '/Data/' + 'Merged_New_Variables_Only.csv')#, dtype='unicode')
 
-        df = df.drop(['CRASH_RECORD_ID', 'RD_NO', 'CRASH_DATE', 'LATITUDE', 'LONGITUDE'],
+        df = df.drop(['CRASH_RECORD_ID', 'RD_NO', 'CRASH_DATE', 'LATITUDE', 'LONGITUDE', 'PRIM_CONTRIBUTORY_CAUSE'],
                      axis=1)  # 'CRASH_DATE_x', 'DATE_POLICE_NOTIFIED', 'HIT_AND_RUN_I', 'RD_NO_y',
         return df
 

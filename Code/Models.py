@@ -54,9 +54,13 @@ from sklearn.model_selection import StratifiedKFold
 
 
 # Resampling
-import imblearn
-print(imblearn.__version__)
+# IMBLEARN WORKS WITH TENSORFLOW 1.14.0
+#pip install --user --upgrade tensorflow==1.14.0
+# import imblearn
+# print(imblearn.__version__)
+
 from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTENC
 from imblearn.over_sampling import RandomOverSampler
 
 # metrics
@@ -64,6 +68,10 @@ from sklearn import metrics
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from catboost.utils import get_confusion_matrix
+
+#Save model
+import pickle
+from sklearn.externals import joblib
 
 
 
@@ -77,7 +85,9 @@ class ModelAccidents():
         y = df[target]
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1234)
-        categorical_features_indices = np.where(X.dtypes != np.float)[0]
+        # categorical_features_indices = np.where(X.dtypes != np.float)[0]
+        categorical_features_indices = np.where((X.dtypes != np.int64) & (X.dtypes != np.float))[0]
+        # categorical_features_indices = X.select_dtypes(exclude=['int64', 'float64']).columns
         return X, y, X_train, X_test, y_train, y_test, categorical_features_indices
 
     def feature_importance(self, X, y):
@@ -129,13 +139,16 @@ class ModelAccidents():
         return X_train_res, y_train_res
 
     @staticmethod
-    def oversampling_cat(X_train, y_train):
-        over_sampler = RandomOverSampler()
-        X_train_res, y_train_res = over_sampler.fit_sample(X_train, y_train)
+    def oversampling_cat(X_train, y_train, categorical_features_indices):
+        # over_sampler = RandomOverSampler()
+        # X_train_res, y_train_res = over_sampler.fit_sample(X_train, y_train)
+        sm = SMOTENC(random_state=42, categorical_features=categorical_features_indices)
+        X_train_res, y_train_res = sm.fit_resample(X_train, y_train)
         print('Resampled dataset shape %s' % Counter(y_train_res))
         return X_train_res, y_train_res
 
     def model_catboost(self, X, y, X_train, y_train, X_test, y_test, categorical_features_indices, target, file):
+        print("Processing CATBOOST....")
 
         # Adicione esto: inicio
         train_pool = Pool(X_train, y_train, cat_features=categorical_features_indices)
@@ -147,12 +160,12 @@ class ModelAccidents():
                                    random_seed=42,
                                    leaf_estimation_method='Newton')
 
-        model.fit(train_pool, eval_set=validate_pool, use_best_model=True, verbose=50, plot=True,
+        model.fit(train_pool, eval_set=validate_pool, use_best_model=True, verbose=50, plot=False,
                   early_stopping_rounds=100)
 
         # cross-validation
         cv_params = model.get_params()
-        cv_data = cv(Pool(X, y, cat_features=categorical_features_indices), cv_params, fold_count=10, plot=True)
+        cv_data = cv(Pool(X, y, cat_features=categorical_features_indices), cv_params, fold_count=10, plot=False)
         print('Precise validation accuracy score: {}'.format(np.max(cv_data)))  # ['TotalF1']
         # fin
 
@@ -170,7 +183,7 @@ class ModelAccidents():
 
         print("SEGUNDO prediccion")
         print(model.best_iteration_, model.best_score_)
-        print(model.evals_result_['validation_1']['MultiClass'][-10:])
+        print(model.evals_result_['validation']['MultiClass'][-10:])
 
         # prediction
         pred = model.predict(X_test)
@@ -355,7 +368,6 @@ class ModelAccidents():
             print('Top', str(rank + 1))
             print('%-15s' % 'best_score:', best_score)
             print('%-15s' % 'best_estimator:'.format(20), type(best_estimator.named_steps[clf]))
-            print('%-15s' % 'best_estimator:'.format(20), type(best_estimator.named_steps['']))
             print('%-15s' % 'best_params:'.format(20), best_params, end='\n\n')
 
         # Get the best estimator
@@ -378,3 +390,21 @@ class ModelAccidents():
         print("done in %0.3fs" % (time() - t0), end='\n')
         print(classification_report(expected_y, y_pred), end='\n')
         print(confusion_matrix(expected_y, y_pred), end='\n')
+
+    def save_shallow_model(self, best_estimator, X, y):
+        #retrain the algorithm using the whole data X,y then save it
+        model = LinearRegression()
+        model.fit(X, y)
+        joblib.dump(best_estimator, 'shallow_model.pkl', compress=1)
+        print("File: shallow_model.pkl has been saved!")
+        return False
+
+    def predict_new_data(self, filename, Xnew):
+        # load the model from disk
+        loaded_model = pickle.load(open(filename, 'rb'))
+        # make a prediction
+        ynew = loaded_model.predict(Xnew)
+        # result = loaded_model.score(X_test, Y_test)
+        print(ynew)
+        # show the inputs and predicted outputs
+        return print("X=%s, Predicted=%s" % (Xnew[0], ynew[0]))

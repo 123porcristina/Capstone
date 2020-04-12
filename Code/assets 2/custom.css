@@ -1,0 +1,39 @@
+.padding-top-bot{
+  padding-top: 12px;
+  padding-bottom: 18px;
+}
+
+.Select-control{
+  /*border: 1px solid red !important;*/
+     /*margin-left: 9%;*/
+  margin-left: 1% !important;
+  height: 30px !important;
+  /*width: 50%;*/
+  width: 20% !important;
+  box-sizing: border-box !important;
+  padding: 6px 10px !important; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: transparent !important;
+  border: 1px solid #8898B2 !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  font-family: "Geneva", "Tahoma", "Verdana", "sans-serif" !important;
+  font-size: inherit !important;
+  color: #D1D1D1 !important;
+    display: inline-block !important;
+}
+
+#preloaded-sequences, #fasta-entry-dropdown, #selection-or-coverage, #sel-slider-or-input, #translation-alphabet, #sel-color, #mouse-sel-or-subpart-sel, #coverage-color, #coverage-bg-color, #coverage-tooltip, #coverage-underscore {
+    display: inline-block;
+    width: 150px;
+}
+
+
+@media only screen and (max-width: 320px){
+  .Select-menu-outer, .Select-value{
+    font-size: 10.5px;
+  }
+  .upload{
+    padding: 5px;
+  }
+}
