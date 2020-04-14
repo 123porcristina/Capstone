@@ -204,7 +204,6 @@ def severity():
             dcc.Dropdown(
                 id="nrows-traffic",
                 options=[
-                    {'label': 'None', 'value': 'None'},
                     {'label': 'Traffic Signal', 'value': 'TrafficSignal'},
                     {'label': 'Other Control', 'value': 'OtherControl'},
                 ],
