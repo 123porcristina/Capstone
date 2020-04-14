@@ -396,8 +396,7 @@ class ModelAccidents():
         model = LinearRegression()
         model.fit(X, y)
         joblib.dump(best_estimator, 'shallow_model.pkl', compress=1)
-        print("File: shallow_model.pkl has been saved!")
-        return False
+        return print("File: shallow_model.pkl has been saved!")
 
     def predict_new_data(self, filename, Xnew):
         # load the model from disk
@@ -408,3 +407,28 @@ class ModelAccidents():
         print(ynew)
         # show the inputs and predicted outputs
         return print("X=%s, Predicted=%s" % (Xnew[0], ynew[0]))
+
+    def train_all_save_catboost(self, X, y, categorical_features_indices):
+        """train whole data and save the training to be use later in new predictions"""
+        model = CatBoostClassifier(loss_function='MultiClass', eval_metric='TotalF1',
+                                   random_seed=42, leaf_estimation_method='Newton')
+        cv_data = cv(Pool(X, y, cat_features=categorical_features_indices), model.get_params())
+        print("precise validation accuracy score:{}".format(np.max(cv_data)))
+        model.fit(X, y, cat_features=categorical_features_indices)
+
+        model.save_model('catboost_model.dump')
+        print("Catboost model has been saved!")
+
+    def predict_newdata_catboost(self, X_new):
+        """Load the model """
+        model = CatBoostClassifier()
+        model.load_model('catboost_model.dump')
+        "Predict new data"
+        return model.predict(X_new)
+
+        #get new X to predict
+        #get categorical values
+        #predict
+
+
+

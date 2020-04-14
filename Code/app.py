@@ -1,26 +1,18 @@
 # import the necessary packages
-import face_recognition
-import argparse
-import imutils
-import pickle
-import time
-import cv2
-import os
-import math
-import numpy as np
+
+import pandas as pd
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import base64
 from dash.dependencies import Input, Output
-from flask import Flask, Response
-
+from Code import Models as Model
 
 
 app = dash.Dash(__name__)
-app.css.append_css({'external_url': 'static/custom.css'})
+# app.css.append_css({'external_url': 'static/custom.css'})
 app.config['suppress_callback_exceptions'] = True
 
+# Functions to be passed into html
 def about():
     return html.Div(className='content', children=[
         html.P(
@@ -45,12 +37,14 @@ def about():
             ]), html.Br(),
         ],)
 
+
 def reference():
     return html.Div([
         'Reference: ',
-        html.A('TechTank paper',
-        href='https://www.brookings.edu/blog/techtank/2019/06/20/what-are-the-proper-limits-on-police-use-of-facial-recognition/)')
+        html.A('Paper',
+        href='https://www.google.com/)')
         ])
+
 
 def link_github():
     return html.Div([
@@ -293,7 +287,7 @@ def severity():
 
             html.Br(),
             html.Br(),
-            html.Button('Predict', id='btn-predict-severity', className="control-download", n_clicks_timestamp=0),
+            html.Button('Predict', id='btn-predict-severity', className="control-download", n_clicks=0),#n_clicks_timestamp=0),
             html.Br(),
                 ]),
             ])
@@ -433,8 +427,7 @@ app.layout = html.Div(
                         html.Hr(),
                     ])
                 ),
-
-                ###tab 3
+                # tab 3: Predict Severity
                 dcc.Tab(
                     label='Predict Severity',
                     value='data2',
@@ -444,7 +437,7 @@ app.layout = html.Div(
                     ])
                 ),
 
-                ###tab 4
+                ###tab 4: Predict Risk
                 dcc.Tab(
                     label='Predict Risk',
                     value='data3',
@@ -455,7 +448,7 @@ app.layout = html.Div(
                 ),
             ])
         ]),
-                # show video
+                # Information on the right side - do not change the identation
                 html.Div(
                     className="eight columns card-left",
                     children=[
@@ -463,28 +456,20 @@ app.layout = html.Div(
                         html.Div(
                             className="bg-white",
                             children=[
-                                # dcc.Store(id='memory-output'),
                                 html.Div(id='output-video'),
-                                dcc.Loading(id="loading-1", children=[html.Div(id="loading-output-1")], type="default"),
+                                html.Div(id='predict-severity'),
                             ],
-                        )
+                        ),
                     ],
                 ),
-                dcc.Store(id="error", storage_type="memory"),
     ]
 )
-
-image_count = 1
 
 
 @app.callback(Output('output-video', 'children'),
               [Input('btn-1', 'n_clicks_timestamp'),
                Input('btn-2', 'n_clicks_timestamp')])
 def displayClick(btn1, btn2):
-
-    # global image_count
-    # global vd
-
     if int(btn1) > int(btn2):
         # Shows EDA in the right side of the screen
         print("button EDA was pressed")
@@ -497,29 +482,58 @@ def displayClick(btn1, btn2):
                 style={'border-style': 'none'}
             ),
         ]
+    elif int(btn2) > int(btn1):
+        return html.Div([])
     else:
-        msg = 'None of the buttons have been clicked yet'
         return html.Div([])
 
 
-# @app.callback(Output('loading-output-1', 'children'),
-#               [Input('btn-1', 'n_clicks_timestamp'),
-#                Input('btn-2', 'n_clicks_timestamp'),
-#                Input('btn-3', 'n_clicks_timestamp'),
-#                Input('btn-4', 'n_clicks_timestamp'),
-#                Input('btn-5', 'n_clicks_timestamp'),
-#                Input('btn-6', 'n_clicks_timestamp')])
-# def displayLoadTrain(btn1, btn2, btn3, btn4, btn5, btn6):
-#     if int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4) and int(btn2) > int(btn5) and int(btn2) > int(btn6):  # button 2 train
-#         # print('Button 2 was most recently clicked')
-#         time.sleep(1)
-#         # ef.encoding()
-#         # train.faces_train()
-#         msg = 'Training has finished!'
-#         image_filename = 'saved_images/training_image.png'  # replace with your own image
-#         encoded_image = base64.b64encode(open(image_filename, 'rb').read())
-#         return html.Div(
-#             [html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
+@app.callback(Output('predict-severity', 'children'),
+              [Input('nrows-Crash-Type', 'value'),
+               Input('nrows-Crash-Hour', 'value'),
+               Input('nrows-day-week', 'value'),
+               Input('nrows-month', 'value'),
+               Input('nrows-contributory', 'value'),
+               Input('nrows-speed', 'value'),
+               Input('nrows-traffic', 'value'),
+               Input('nrows-weather', 'value'),
+               Input('nrows-road', 'value'),
+               Input('nrows-sex', 'value'),
+               Input('nrows-bac', 'value'),
+               Input('nrows-age', 'value'),
+               Input('btn-predict-severity', 'n_clicks'),
+               ])
+def displayPredictSeverity(dropdown1, dropdown2, dropdown3, dropdown4,
+                           dropdown5, dropdown6, dropdown7, dropdown8,
+                           dropdown9, dropdown10, dropdown11, dropdown12, btn_severity):
+
+    """get data from the screen -tab: predict severity"""
+    new_data = {'FIRST_CRASH_TYPE': dropdown1, 'CRASH_HOUR': dropdown2,
+                'CRASH_DAY_OF_WEEK': dropdown3, 'CRASH_MONTH': dropdown4,
+                'Contributory_Cause_New': dropdown5, 'Posted_Speed_New': dropdown6,
+                'Traffic_Control_New': dropdown7, 'Weather_New': dropdown8,
+                'Road_Surface_New': dropdown9, 'SEX2': dropdown10,
+                'BAC2': dropdown11, 'AGE2': dropdown12}
+
+    """convert to df"""
+    df = pd.DataFrame(data=new_data, index=[0])
+
+    if int(btn_severity >= 1):
+        print("BOTON predict PRESSED!!!")
+        print(df)
+        model = Model.ModelAccidents(df)
+        prediction = model.predict_newdata_catboost(X_new=df)
+        # Convert prediction to text
+        msg = str(prediction)
+        print("message: " + msg)
+        print(prediction)
+        return [html.Div(children=[
+            html.Div(children=[msg]),
+            html.Br(),
+            ])
+        ]
+    else:
+        return html.Div([])
 
 
 if __name__ == '__main__':
