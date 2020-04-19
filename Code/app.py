@@ -286,13 +286,13 @@ def severity():
 
             html.Br(),
             html.Br(),
-            html.Button('Predict', id='btn-predict-severity', className="control-download", n_clicks=0),#n_clicks_timestamp=0),
+            html.Button('Predict', id='btn-predict-severity', className="control-download", n_clicks_timestamp=0),#,n_clicks=0),#
             html.Br(),
                 ]),
             ])
 
 
-def risk():
+def risk(): ##TAISHA: add here your elements of the screen i.e text box, dropdowns, buttons,
     return html.Div(className='app-controls-block', children=[
         html.Div(className='app-controls-name', children='Actions'),
         html.Hr(),
@@ -465,30 +465,13 @@ app.layout = html.Div(
 )
 
 
+
+
+
 @app.callback(Output('output-video', 'children'),
               [Input('btn-1', 'n_clicks_timestamp'),
-               Input('btn-2', 'n_clicks_timestamp')])
-def displayClick(btn1, btn2):
-    if int(btn1) > int(btn2):
-        # Shows EDA in the right side of the screen
-        print("button EDA was pressed")
-        return [
-            html.Iframe(
-                id="bla",
-                src=app.get_asset_url('EDA.html'),
-                height="100%",
-                width='100%',
-                style={'border-style': 'none'}
-            ),
-        ]
-    elif int(btn2) > int(btn1):
-        return html.Div([])
-    else:
-        return html.Div([])
-
-
-@app.callback(Output('predict-severity', 'children'),
-              [Input('nrows-Crash-Type', 'value'),
+               Input('btn-2', 'n_clicks_timestamp'),
+               Input('nrows-Crash-Type', 'value'),
                Input('nrows-Crash-Hour', 'value'),
                Input('nrows-day-week', 'value'),
                Input('nrows-month', 'value'),
@@ -500,24 +483,36 @@ def displayClick(btn1, btn2):
                Input('nrows-sex', 'value'),
                Input('nrows-bac', 'value'),
                Input('nrows-age', 'value'),
-               Input('btn-predict-severity', 'n_clicks'),
-               ])
-def displayPredictSeverity(dropdown1, dropdown2, dropdown3, dropdown4,
-                           dropdown5, dropdown6, dropdown7, dropdown8,
-                           dropdown9, dropdown10, dropdown11, dropdown12, btn_severity):
+               Input('btn-predict-severity', 'n_clicks_timestamp'),
+               Input('btn-predict-risk', 'n_clicks_timestamp')])# 'n_clicks')])
+def displayClick(btn1, btn2, dropdown1, dropdown2, dropdown3, dropdown4,
+                 dropdown5, dropdown6, dropdown7, dropdown8, dropdown9,
+                 dropdown10, dropdown11, dropdown12, btn_severity, btn_risk):
+    if int(btn1) > int(btn2) and int(btn1) > int(btn_severity) and int(btn1) > int(btn_risk): #:
+        # Shows EDA in the right side of the screen
+        print("button EDA was pressed")
+        return [
+            html.Iframe(
+                id="bla",
+                src=app.get_asset_url('EDA.html'),
+                height="100%",
+                width='100%',
+                style={'border-style': 'none'}
+            ),
+        ]
+    elif int(btn2) > int(btn1) and int(btn2) > int(btn_severity) and int(btn2) > int(btn_risk):
+        return html.Div([])
+    elif int(btn_severity) > int(btn1) and int(btn_severity) > int(btn2) and int(btn_severity) > int(btn_risk):
+        """get data from the screen -tab: predict severity"""
+        new_data = {'FIRST_CRASH_TYPE': dropdown1, 'CRASH_HOUR': dropdown2,
+                    'CRASH_DAY_OF_WEEK': dropdown3, 'CRASH_MONTH': dropdown4,
+                    'Contributory_Cause_New': dropdown5, 'Posted_Speed_New': dropdown6,
+                    'Traffic_Control_New': dropdown7, 'Weather_New': dropdown8,
+                    'Road_Surface_New': dropdown9, 'SEX2': dropdown10,
+                    'BAC2': dropdown11, 'AGE2': dropdown12}
 
-    """get data from the screen -tab: predict severity"""
-    new_data = {'FIRST_CRASH_TYPE': dropdown1, 'CRASH_HOUR': dropdown2,
-                'CRASH_DAY_OF_WEEK': dropdown3, 'CRASH_MONTH': dropdown4,
-                'Contributory_Cause_New': dropdown5, 'Posted_Speed_New': dropdown6,
-                'Traffic_Control_New': dropdown7, 'Weather_New': dropdown8,
-                'Road_Surface_New': dropdown9, 'SEX2': dropdown10,
-                'BAC2': dropdown11, 'AGE2': dropdown12}
-
-    """convert to df"""
-    df = pd.DataFrame(data=new_data, index=[0])
-
-    if int(btn_severity >= 1):
+        """convert to df"""
+        df = pd.DataFrame(data=new_data, index=[0])
         print("BOTON predict PRESSED!!!")
         print(df)
         model = Model.ModelAccidents(df)
@@ -529,10 +524,82 @@ def displayPredictSeverity(dropdown1, dropdown2, dropdown3, dropdown4,
         return [html.Div(children=[
             html.Div(children=[msg]),
             html.Br(),
-            ])
+        ])
         ]
+    # elif int(btn_risk) > int(btn1) and int(btn_risk) > int(btn2) and int(btn_risk) > int(btn_severity):
+    #     #TAISHA: here you program your action (button)
+
     else:
         return html.Div([])
+
+# @app.callback(Output('output-video', 'children'),
+#               [Input('btn-1', 'n_clicks_timestamp'),
+#                Input('btn-2', 'n_clicks_timestamp')])
+# def displayClick(btn1, btn2):
+#     if int(btn1) > int(btn2):
+#         # Shows EDA in the right side of the screen
+#         print("button EDA was pressed")
+#         return [
+#             html.Iframe(
+#                 id="bla",
+#                 src=app.get_asset_url('EDA.html'),
+#                 height="100%",
+#                 width='100%',
+#                 style={'border-style': 'none'}
+#             ),
+#         ]
+#     elif int(btn2) > int(btn1):
+#         return html.Div([])
+#     else:
+#         return html.Div([])
+
+
+# @app.callback(Output('predict-severity', 'children'),
+#               [Input('nrows-Crash-Type', 'value'),
+#                Input('nrows-Crash-Hour', 'value'),
+#                Input('nrows-day-week', 'value'),
+#                Input('nrows-month', 'value'),
+#                Input('nrows-contributory', 'value'),
+#                Input('nrows-speed', 'value'),
+#                Input('nrows-traffic', 'value'),
+#                Input('nrows-weather', 'value'),
+#                Input('nrows-road', 'value'),
+#                Input('nrows-sex', 'value'),
+#                Input('nrows-bac', 'value'),
+#                Input('nrows-age', 'value'),
+#                Input('btn-predict-severity', 'n_clicks'),
+#                ])
+# def displayPredictSeverity(dropdown1, dropdown2, dropdown3, dropdown4,
+#                            dropdown5, dropdown6, dropdown7, dropdown8,
+#                            dropdown9, dropdown10, dropdown11, dropdown12, btn_severity):
+#
+#     """get data from the screen -tab: predict severity"""
+#     new_data = {'FIRST_CRASH_TYPE': dropdown1, 'CRASH_HOUR': dropdown2,
+#                 'CRASH_DAY_OF_WEEK': dropdown3, 'CRASH_MONTH': dropdown4,
+#                 'Contributory_Cause_New': dropdown5, 'Posted_Speed_New': dropdown6,
+#                 'Traffic_Control_New': dropdown7, 'Weather_New': dropdown8,
+#                 'Road_Surface_New': dropdown9, 'SEX2': dropdown10,
+#                 'BAC2': dropdown11, 'AGE2': dropdown12}
+#
+#     """convert to df"""
+#     df = pd.DataFrame(data=new_data, index=[0])
+#
+#     if int(btn_severity >= 1):
+#         print("BOTON predict PRESSED!!!")
+#         print(df)
+#         model = Model.ModelAccidents(df)
+#         prediction = model.predict_newdata_catboost(X_new=df)
+#         # Convert prediction to text
+#         msg = str(prediction)
+#         print("message: " + msg)
+#         print(prediction)
+#         return [html.Div(children=[
+#             html.Div(children=[msg]),
+#             html.Br(),
+#             ])
+#         ]
+#     else:
+#         return html.Div([])
 
 
 if __name__ == '__main__':
