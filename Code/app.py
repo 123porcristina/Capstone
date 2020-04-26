@@ -18,9 +18,8 @@ def about():
         html.P(
             children=[
                 """
-                According to the Centers for Disease Control and Prevention (CDC), 
-                car accidents are one of the leading causes of death in the U.S., 
-                causing around thirty five thousands of deaths per year.
+                According to the World Health Organization (WHO) , car accidents 
+                cause 1.25 millions of deaths annually world. 
                 """
                 """
                 While there is some understanding of the factors that contribute 
@@ -42,7 +41,7 @@ def reference():
     return html.Div([
         'Reference: ',
         html.A('Paper',
-        href='https://www.google.com/)')
+        href='https://www.sciencedirect.com/science/article/abs/pii/S0001457517302865)')
         ])
 
 
@@ -191,7 +190,7 @@ def severity():
             dcc.Input(
                 id="nrows-speed",
                 type="number",
-                value=30,
+                value=60,
                 name="number of rows",
                 min=30,
                 step=1,
@@ -265,7 +264,7 @@ def severity():
             dcc.Input(
                 id="nrows-bac",
                 type="number",
-                value=1,
+                value=0,
                 name="number of rows",
                 min=0,
                 step=1,
@@ -278,7 +277,7 @@ def severity():
             dcc.Input(
                 id="nrows-age",
                 type="number",
-                value=1,
+                value=33,
                 name="number of rows",
                 min=16,
                 step=1,
@@ -298,78 +297,78 @@ def risk(): ##TAISHA: add here your elements of the screen i.e text box, dropdow
         html.Hr(),
         html.Div(className="'app-controls-block'", children=[
 
-            html.Div(
-                className='app-controls-name-label',
-                children='Crash Hour:'
-            ),
-            dcc.Dropdown(
-                id="nrows-Crash-Hour-risk",
-                options=[
-                    {'label': '0', 'value': '0'},
-                    {'label': '1', 'value': '1'},
-                    {'label': '2', 'value': '2'},
-                    {'label': '3', 'value': '3'},
-                    {'label': '4', 'value': '4'},
-                    {'label': '5', 'value': '5'},
-                    {'label': '6', 'value': '6'},
-                    {'label': '7', 'value': '7'},
-                    {'label': '8', 'value': '8'},
-                    {'label': '9', 'value': '9'},
-                    {'label': '10', 'value': '10'},
-                    {'label': '11', 'value': '11'},
-                    {'label': '12', 'value': '12'},
-                    {'label': '13', 'value': '13'},
-                    {'label': '14', 'value': '14'},
-                    {'label': '15', 'value': '15'},
-                    {'label': '16', 'value': '16'},
-                    {'label': '17', 'value': '17'},
-                    {'label': '18', 'value': '18'},
-                    {'label': '19', 'value': '19'},
-                    {'label': '20', 'value': '20'},
-                    {'label': '21', 'value': '21'},
-                    {'label': '22', 'value': '22'},
-                    {'label': '23', 'value': '23'},
-                ],
-                placeholder='Select...',
-            ), html.Br(), html.Br(),
+            # html.Div(
+            #     className='app-controls-name-label',
+            #     children='Crash Hour:'
+            # ),
+            # dcc.Dropdown(
+            #     id="nrows-Crash-Hour-risk",
+            #     options=[
+            #         {'label': '0', 'value': '0'},
+            #         {'label': '1', 'value': '1'},
+            #         {'label': '2', 'value': '2'},
+            #         {'label': '3', 'value': '3'},
+            #         {'label': '4', 'value': '4'},
+            #         {'label': '5', 'value': '5'},
+            #         {'label': '6', 'value': '6'},
+            #         {'label': '7', 'value': '7'},
+            #         {'label': '8', 'value': '8'},
+            #         {'label': '9', 'value': '9'},
+            #         {'label': '10', 'value': '10'},
+            #         {'label': '11', 'value': '11'},
+            #         {'label': '12', 'value': '12'},
+            #         {'label': '13', 'value': '13'},
+            #         {'label': '14', 'value': '14'},
+            #         {'label': '15', 'value': '15'},
+            #         {'label': '16', 'value': '16'},
+            #         {'label': '17', 'value': '17'},
+            #         {'label': '18', 'value': '18'},
+            #         {'label': '19', 'value': '19'},
+            #         {'label': '20', 'value': '20'},
+            #         {'label': '21', 'value': '21'},
+            #         {'label': '22', 'value': '22'},
+            #         {'label': '23', 'value': '23'},
+            #     ],
+            #     placeholder='Select...',
+            # ), html.Br(), html.Br(),
+            #
+            # html.Div(
+            #     className='app-controls-name-label',
+            #     children='Crash Day of Week:'
+            # ),
+            # dcc.Dropdown(
+            #     id="nrows-day-week-risk",
+            #     options=[
+            #         {'label': 'Sunday', 'value': '1'},
+            #         {'label': 'Monday', 'value': '2'},
+            #         {'label': 'Tuesday', 'value': '3'},
+            #         {'label': 'Wednesday', 'value': '4'},
+            #         {'label': 'Thursday', 'value': '5'},
+            #         {'label': 'Friday', 'value': '6'},
+            #         {'label': 'Saturday', 'value': '7'},
+            #     ],
+            #     placeholder='Select...',
+            # ), html.Br(), html.Br(),
+            #
+            # html.Div(
+            #     className='app-controls-name-label',
+            #     children='Weather:'
+            # ),
+            # dcc.Dropdown(
+            #     id="nrows-weather-risk",
+            #     options=[
+            #         {'label': 'Clear', 'value': 'Clear'},
+            #         {'label': 'Snow', 'value': 'Snow'},
+            #         {'label': 'Cloudy', 'value': 'Cloudy'},
+            #         {'label': 'Rain', 'value': 'Rain'},
+            #         {'label': 'Other', 'value': 'OtherForecast'},
+            #     ],
+            #     placeholder='Select...',
+            # ),
 
-            html.Div(
-                className='app-controls-name-label',
-                children='Crash Day of Week:'
-            ),
-            dcc.Dropdown(
-                id="nrows-day-week-risk",
-                options=[
-                    {'label': 'Sunday', 'value': '1'},
-                    {'label': 'Monday', 'value': '2'},
-                    {'label': 'Tuesday', 'value': '3'},
-                    {'label': 'Wednesday', 'value': '4'},
-                    {'label': 'Thursday', 'value': '5'},
-                    {'label': 'Friday', 'value': '6'},
-                    {'label': 'Saturday', 'value': '7'},
-                ],
-                placeholder='Select...',
-            ), html.Br(), html.Br(),
-
-            html.Div(
-                className='app-controls-name-label',
-                children='Weather:'
-            ),
-            dcc.Dropdown(
-                id="nrows-weather-risk",
-                options=[
-                    {'label': 'Clear', 'value': 'Clear'},
-                    {'label': 'Snow', 'value': 'Snow'},
-                    {'label': 'Cloudy', 'value': 'Cloudy'},
-                    {'label': 'Rain', 'value': 'Rain'},
-                    {'label': 'Other', 'value': 'OtherForecast'},
-                ],
-                placeholder='Select...',
-            ),
-
+            # html.Br(),
             html.Br(),
-            html.Br(),
-            html.Button('Predict', id='btn-predict-risk', className="control-download", n_clicks_timestamp=0),
+            html.Button('Predict Risk', id='btn-predict-risk', className="control-download", n_clicks_timestamp=0),
             html.Br(),
                 ]),
             ])
@@ -526,8 +525,16 @@ def displayClick(btn1, btn2, dropdown1, dropdown2, dropdown3, dropdown4,
             html.Br(),
         ])
         ]
-    # elif int(btn_risk) > int(btn1) and int(btn_risk) > int(btn2) and int(btn_risk) > int(btn_severity):
-    #     #TAISHA: here you program your action (button)
+    elif int(btn_risk) > int(btn1) and int(btn_risk) > int(btn2) and int(btn_risk) > int(btn_severity):
+        return [
+            html.Iframe(
+                id="bla",
+                src=app.get_asset_url('Holt.png'),
+                height="100%",
+                width='100%',
+                style={'border-style': 'none'}
+            ),
+        ]
 
     else:
         return html.Div([])
