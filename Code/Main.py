@@ -82,16 +82,16 @@ def main():
     #                                          target=target, file="catboost_accidents_predictionNOsampled.csv")
     # print('the best cv accuracy is :{}'.format(np.max(cv_data)))
     #
-    # # NOT ENCODED - OVERSAMPLED - CATBOOST
-    # X_train_res, y_train_res = model.oversampling_cat(X_train, y_train, categorical_features_indices)
-    # print("Starting catboost.....")
-    # model_cb = model.model_catboost(X, y, X_train_res, y_train_res, X_test, y_test, categorical_features_indices,
-    #                                 target=target, file="catboost_accidents_predictionSampled.csv")
-    #
-    # # Get feature importance using catboost
+    # NOT ENCODED - OVERSAMPLED - CATBOOST
+    X_train_res, y_train_res = model.oversampling_cat(X_train, y_train, categorical_features_indices)
+    print("Starting catboost.....")
+    model_cb = model.model_catboost(X, y, X_train_res, y_train_res, X_test, y_test, categorical_features_indices,
+                                    target=target, file="catboost_accidents_predictionSampled.csv")
+
+    # Get feature importance using catboost
     # model_cb.get_feature_importance()#(prettified=True)
 
-    # model.train_all_save_catboost(X, y, categorical_features_indices)
+    model.train_all_save_catboost(X, y, categorical_features_indices)
 
 
 if __name__ == '__main__':

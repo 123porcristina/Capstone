@@ -157,8 +157,7 @@ class ModelAccidents():
 
         #         model=CatBoostClassifier(loss_function='MultiClass',use_best_model=True, random_seed=42)#, class_weights=[1,2,3,4,5,6,7,8,9,10,11])
         model = CatBoostClassifier(loss_function='MultiClass', eval_metric='TotalF1', use_best_model=True,
-                                   random_seed=42,
-                                   leaf_estimation_method='Newton')
+                                   random_seed=42, leaf_estimation_method='Newton')
 
         model.fit(train_pool, eval_set=validate_pool, use_best_model=True, verbose=50, plot=False,
                   early_stopping_rounds=100)
@@ -207,6 +206,16 @@ class ModelAccidents():
         #         conf_mat = get_confusion_matrix(model, Pool(X_train, y_train, cat_features=categorical_features_indices))
         conf_mat = get_confusion_matrix(model, Pool(X_test, y_test, cat_features=categorical_features_indices))
         print(conf_mat)
+
+        # feature selection
+        print(model.get_feature_importance(prettified=True))
+        # feature_importances = model.get_feature_importance(train_pool)
+        # feature_names = X_train.columns
+        # for score, name in sorted(zip(feature_importances, feature_names), reverse=True):
+        #     print('{}: {}'.format(name, score))
+        ##
+
+
 
         return model, cv_data
 
@@ -415,6 +424,14 @@ class ModelAccidents():
         cv_data = cv(Pool(X, y, cat_features=categorical_features_indices), model.get_params())
         print("precise validation accuracy score:{}".format(np.max(cv_data)))
         model.fit(X, y, cat_features=categorical_features_indices)
+
+        #feature importance
+        print(model.get_feature_importance(prettified=True))
+        # train = Pool(X, y, cat_features=categorical_features_indices)
+        # feature_importances = model.get_feature_importance(train)
+        # feature_names = X.columns
+        # for score, name in sorted(zip(feature_importances, feature_names), reverse=True):
+        #     print('{}: {}'.format(name, score))
 
         model.save_model('catboost_model.dump')
         print("Catboost model has been saved!")
